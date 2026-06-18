@@ -23,7 +23,9 @@ import os
 import httpx
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
+import psutil,time
 
+INICIO = time.time()
 app = FastAPI(
     title="Orders Service",
     description="Gestión de pedidos de la tienda (Módulo 3 - ISY1101)",
@@ -114,3 +116,22 @@ def create_order(order: OrderRequest):
     }
     ORDERS.append(order_record)
     return order_record
+
+
+@app.get("/live")
+def live():
+    """
+    Liveness: el proceso esta vivo y respondiendo. NO depende de nadie externo.
+    Devolvemos OK y desde hace cuantos segundos esta arriba (uptime).
+    """
+    return {"alive": True, "uptime_segundos": round(time.time() - INICIO, 1)}
+
+
+@app.get("/ready")
+def ready():
+    """Readiness: listo solo si NO esta saturado de memoria (uso real con psutil)."""
+    memoria_usada = psutil.virtual_memory().percent
+    if memoria_usada > float(os.getenv("READY_MAX_MEM_PERCENT", "90")):
+        raise HTTPException(status_code=503, detail={"ready": False, "memoria_%": memoria_usada})
+    
+    return {"ready": True, "memoria_%": memoria_usada, "service": "orders-service","cpu":psutil.cpu_percent(interval=0.1)}
