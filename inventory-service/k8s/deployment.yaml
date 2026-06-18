@@ -15,7 +15,7 @@ spec:
         app: inventory-service
     spec:
       containers:
-        - name: orders-service
+        - name: inventory-service
           # Reemplazar <ACCOUNT_ID> y <REGION> tras el push a Amazon ECR.
           image: <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/inventory-service:latest
           ports:
