@@ -13,7 +13,6 @@ Es consumido por orders-service vía HTTP interno:
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-INICIO = time.time()
 app = FastAPI(
     title="Inventory Service",
     description="Control de stock de la tienda (Módulo 3 - ISY1101)",
