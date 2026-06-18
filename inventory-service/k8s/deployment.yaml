@@ -8,27 +8,27 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      app: inventory-service
+      app: orders-service
   template:
     metadata:
       labels:
-        app: inventory-service
+        app: orders-service
     spec:
       containers:
-        - name: inventory-service
+        - name: orders-service
           # Reemplazar <ACCOUNT_ID> y <REGION> tras el push a Amazon ECR.
-          image: <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/inventory-service:latest
+          image: <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/orders-service:latest
           ports:
             - containerPort: 8002
           livenessProbe:
             httpGet:
-              path: /live
+              path: /health
               port: 8002
             initialDelaySeconds: 5
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /ready
+              path: /health
               port: 8002
             initialDelaySeconds: 3
             periodSeconds: 5
